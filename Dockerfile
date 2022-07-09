@@ -5,8 +5,8 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PIP_NO_CACHE_DIR=1
 
 ARG BUILD_DATE=now
-ARG VCS_REF
-ARG VERSION
+ARG VCS_REF=bee0a4d4f50af98513145f27bfa6f095e78fd99a
+ARG VERSION=8.7.0
 
 ENV SERVER_VERSION=${VERSION}
 ENV CLIENT_VERSION=8.5.1
@@ -31,6 +31,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0.0-rc.1"
 
+COPY antrema-cassl.crt /usr/local/share/ca-certificates/antrema-cassl.crt
+COPY antrema-caroot.crt /usr/local/share/ca-certificates/antrema-caroot.crt
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && \
@@ -49,23 +52,14 @@ RUN apt-get update && \
     xmlsec1 && \
     apt-get -y clean && \
     apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    update-ca-certificates
 
 RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
     echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     nginx && \
-    apt-get -y clean && \
-    apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/*
-
-# hadolint ignore=DL3008
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
-    echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    mongodb-org-shell && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*

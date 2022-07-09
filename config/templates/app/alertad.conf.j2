@@ -1,2 +1,24 @@
-DEBUG = {{ 'True' if env.DEBUG else 'False' }}
+# SECRET_KEY, used to encode tokens and API keys
 SECRET = "{{ env.SECRET_KEY }}"
+
+# Database connection
+DATABASE_URL = "{{ env.DATABASE_URL }}"
+
+# Logging
+DEBUG = {{ env.DEBUG or 'False' }}
+LOG_LEVEL = "{{ env.LOG_LEVEL|lower or 'warn' }}"
+
+# Customer functionnality
+CUSTOMER_VIEWS = {{ env.CUSTOMER_VIEWS or 'False' }}
+
+# Authentication
+AUTH_REQUIRED = {{ env.AUTH_REQUIRED or 'False' }}
+ADMIN_USERS = "{{ env.ADMIN_USERS }}"
+AUTH_PROVIDER = "{{ env.AUTH_PROVIDER }}"
+OAUTH2_CLIENT_ID = "{{ env.OAUTH2_CLIENT_ID }}"
+OAUTH2_CLIENT_SECRET = "{{ env.OAUTH2_CLIENT_SECRET }}"
+OIDC_ISSUER_URL = "{{ env.OIDC_ISSUER_URL }}"
+OIDC_VERIFY_TOKEN = {{ env.OIDC_VERIFY_TOKEN or 'False' }}
+OIDC_ROLE_CLAIM = "{{ env.OIDC_CUSTOM_CLAIM|lower or 'roles' }}"
+OIDC_GROUP_CLAIM = "{{ env.OIDC_GROUP_CLAIM|lower or 'groups' }}"
+ALLOWED_OIDC_ROLES = "['*']"
